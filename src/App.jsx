@@ -25,7 +25,9 @@ class App extends Component {
   }
 
   componentDidMount() {
+    this.webSocket = new WebSocket("ws://localhost:4000");
 
+    
   }
 
   addMessage(event) {
@@ -36,8 +38,10 @@ class App extends Component {
         username: this.state.currentUser.name,
         content: event.target.value
       }
-        const messages = this.state.messages.concat(newMessage)
-        this.setState({messages: messages})
+        this.webSocket.send(JSON.stringify(newMessage));
+
+        // const messages = this.state.messages.concat(newMessage)
+        // this.setState({messages: messages})
     }
   }
 
