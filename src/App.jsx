@@ -21,17 +21,34 @@ class App extends Component {
         }
       ]
     }
+    this.addMessage = this.addMessage.bind(this);
   }
 
   componentDidMount() {
 
   }
 
+  addMessage(event) {
+    // console.log(event.target.value);
+    if(event.keyCode === 13) {
+      const newMessage = {
+        id:3,
+        username: this.state.currentUser.name,
+        content: event.target.value
+      }
+        const messages = this.state.messages.concat(newMessage)
+        this.setState({messages: messages})
+    }
+  }
+
   render() {
     return(
       <div>
-        <MessageList messages={this.state.messages} />
-        <Chatbar currentUser={this.state.currentUser} />
+        <MessageList
+          messages={this.state.messages} />
+        <Chatbar
+          currentUser={this.state.currentUser}
+          addMessage={this.addMessage} />
       </div>
     );
   }
