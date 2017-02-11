@@ -2,7 +2,8 @@
 const http = require('http');
 const WebSocket = require('ws');
 const express = require('express');
-const SocketServer = require('ws').Server;
+const SocketServer = require('ws').Server
+const uuidV4 = require('uuid/v4');
 
 // Set the port to 4000
 const PORT = 4000;
@@ -16,6 +17,14 @@ const server = express()
 // Create the WebSockets server
 const wss = new SocketServer({ server });
 
+wss.broadcast = function broadcast(data) {
+  wss.clients.forEach(function each(client) {
+    if (client.readyState === WebSocket.OPEN) {
+      client.send(data);
+    }
+  });
+};
+
 // Set up a callback that will run when a client connects to the server
 // When a client connects they are assigned a socket, represented by
 // the ws parameter in the callback.
@@ -25,8 +34,15 @@ wss.on('connection', (ws) => {
   ws.on('message', function incoming(message) {
     console.log('recieved %s', message);
     const receivedMsg = JSON.parse(message);
+    receivedMsg.id = uuidV4();
+    receivedMsg.type = "incomingMessage";
+    console.log(receivedMsg);
 
-    // outgoingMsg = receivedMsg;
+    outgoingMsg = receivedMsg;
+    console.log(outgoingMsg)
+
+    wss.broadcast(JSON.stringify(outgoingMsg));
+    console.log(outgoingMsg);
 
   });
 

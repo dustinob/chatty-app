@@ -9,7 +9,7 @@ class MessageList extends Component {
       <main className="messages">
         {this.props.messages.map((currentMessage) => {
           return <Message message={currentMessage} key={currentMessage.id} />
-        })
+          })
         }
         <div className="message system">
           Anonymous1 changed their name to nomnom.

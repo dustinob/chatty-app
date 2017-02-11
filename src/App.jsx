@@ -7,41 +7,51 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentUser: {name: "Bob"}, // optional. if currentUser is not defined, it means the user is Anonymous
-      messages: [
-        {
-          id: 1,
-          username: "Bob",
-          content: "Has anyone seen my marbles?"
-        },
-        {
-          id: 2,
-          username: "Anonymous",
-          content: "No, I think you lost them. You lost your marbles Bob. You lost them for good."
-        }
-      ]
+      currentUser: {name: "Anonymous"}, // optional. if currentUser is not defined, it means the user is Anonymous
+      messages: []
     }
+
     this.addMessage = this.addMessage.bind(this);
+    this.updateUsername = this.updateUsername.bind(this);
+  }
+
+
+  updateUsername(event) {
+    if(event.keyCode === 13) {
+      const prevName = this.state.currentUser.name;
+      console.log(event.target.value)
+       this.setState({currentUser: {name: event.target.value}}, () => {
+       this.webSocket.send(JSON.stringify(
+          { type: "postNotification",
+            content: `${prevName} has changed their name to ${this.state.currentUser.name}`
+        }))
+      });
+    }
+  }
+
+  addMessage(event) {
+    if(event.keyCode === 13) {
+      const newMessage = {
+        type: "postMessage",
+        id: 0,
+        username: this.state.currentUser.name,
+        content: event.target.value
+      }
+        this.webSocket.send(JSON.stringify(newMessage));
+    }
   }
 
   componentDidMount() {
     this.webSocket = new WebSocket("ws://localhost:4000");
 
-    
-  }
+    this.webSocket.onmessage = (event) => {
+      console.log(event);
+      const incomingObj = JSON.parse(event.data);
 
-  addMessage(event) {
-    // console.log(event.target.value);
-    if(event.keyCode === 13) {
-      const newMessage = {
-        id:3,
-        username: this.state.currentUser.name,
-        content: event.target.value
-      }
-        this.webSocket.send(JSON.stringify(newMessage));
+    let messages = [];
 
-        // const messages = this.state.messages.concat(newMessage)
-        // this.setState({messages: messages})
+    messages = this.state.messages.concat(incomingObj);
+      this.setState({messages: messages});
     }
   }
 
@@ -51,7 +61,8 @@ class App extends Component {
         <MessageList
           messages={this.state.messages} />
         <Chatbar
-          currentUser={this.state.currentUser}
+          updateUsername={this.updateUsername}
+          currentUser={this.state.currentUser.name}
           addMessage={this.addMessage} />
       </div>
     );
