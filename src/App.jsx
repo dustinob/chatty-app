@@ -29,6 +29,7 @@ class App extends Component {
             id: 0,
             content: `${prevName} has changed their name to ${this.state.currentUser.name}`
         }))
+
       });
     }
   }
@@ -43,10 +44,11 @@ class App extends Component {
         content: event.target.value
       }
         this.webSocket.send(JSON.stringify(newMessage));
+        event.target.value = "";
     }
   }
 
-  
+
   componentDidMount() {
     this.webSocket = new WebSocket("ws://localhost:4000");
 
