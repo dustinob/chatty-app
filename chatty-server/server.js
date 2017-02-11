@@ -31,34 +31,33 @@ wss.broadcast = function broadcast(data) {
 wss.on('connection', (ws) => {
   console.log('Client connected');
 
+  //User connected counter
   wss.broadcast(JSON.stringify({
     type: 'userCount',
     content: wss.clients.size
   }));
 
   ws.on('message', function incoming(message) {
-    // console.log('recieved %s', message);
     const receivedMsg = JSON.parse(message);
 
-    // How to send the message back
-
+    // how to send the message back
+    // broadcast to app as message
     if(receivedMsg.type === "postMessage") {
       receivedMsg.id = uuidV4();
       receivedMsg.type = "incomingMessage";
       console.log("Post Message Log:", receivedMsg);
     }
+
+    //broadcast to app as Notification
     else if(receivedMsg.type === "postNotification") {
       receivedMsg.id = uuidV4();
       receivedMsg.type = "incomingNotification";
       console.log("Post Notication Log:", receivedMsg);
     }
 
+    //broadcast message
     outgoingMsg = receivedMsg;
-    console.log("OutgoingMsg:", outgoingMsg.id, outgoingMsg.type)
-      // console.log(outgoingMsg)
-
     wss.broadcast(JSON.stringify(outgoingMsg));
-    // console.log(outgoingMsg);
 
   });
 
@@ -66,6 +65,7 @@ wss.on('connection', (ws) => {
   ws.on('close', () => {
     console.log('Client disconnected');
 
+    //broadcast user counter
     wss.broadcast(JSON.stringify({
       type: 'userCount',
       content: wss.clients.size

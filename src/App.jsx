@@ -18,6 +18,7 @@ class App extends Component {
     this.updateUsername = this.updateUsername.bind(this);
   }
 
+  //Change usersname function
   updateUsername(event) {
     if(event.keyCode === 13) {
       const prevName = this.state.currentUser.name;
@@ -32,6 +33,7 @@ class App extends Component {
     }
   }
 
+  //Send message
   addMessage(event) {
     if(event.keyCode === 13) {
       const newMessage = {
@@ -44,6 +46,7 @@ class App extends Component {
     }
   }
 
+  
   componentDidMount() {
     this.webSocket = new WebSocket("ws://localhost:4000");
 
@@ -71,6 +74,7 @@ class App extends Component {
     }
   }
 
+  //Render main app page
   render() {
     return(
       <div>
