@@ -40,7 +40,7 @@ body {
       padding: 5px;
     }
 
-    .message.system {
+    .message-system {
       font-style: italic;
       padding: 5px 20px;
     }
@@ -59,6 +59,11 @@ body {
     .message-username {
       flex: 2;
       font-weight: 700;
+    }
+
+    .navbar-users {
+      margin: 20px 0 0 10px;
+      float: right;
     }
 
     .navbar {
